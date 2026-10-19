@@ -7,35 +7,19 @@ import Modal from './components/Modal';
 import VisitForm from './components/VisitForm';
 import VisitDetail from './components/VisitDetail';
 import { loadVisits, saveVisits } from './lib/storage';
-import { BADGES, computeStats, earned, missions, progress, titleFor } from './lib/game';
+import { BADGES, computeStats, earned, missions } from './lib/game';
 import { confetti } from './lib/confetti';
 
-const TABS = [['journal', 'Jurnal'], ['map', 'Peta'], ['scrap', 'Scrapbook'], ['quest', 'Pencapaian']];
-
-function Hero({ visits, onAdd, onMap }) {
-  const s = computeStats(visits), ms = missions(visits), done = ms.filter(m => m.done).length;
-  return (
-    <section className="hero">
-      <div className="stickers" aria-hidden="true"><span>☕</span><span>🥐</span><span>🫖</span><span>🍰</span></div>
-      <h1>Ayo <em>berburu</em> kafe favoritmu!</h1>
-      <p className="lead">Tandai kedai kopi, cafe, dan slowbar di peta. Catat rasa kopimu, kumpulkan XP, selesaikan misi mingguan, dan ubah fotomu jadi scrapbook.</p>
-      <div className="hero-cta">
-        <button className="primary" onClick={onAdd}>☕ Catat kunjungan</button>
-        <button className="outline" onClick={onMap}>📍 Buka peta</button>
-      </div>
-      <div className="hud" aria-live="polite">
-        <div>Level {s.level}<b>{titleFor(s.level).split(' ').slice(0, 2).join(' ')}</b><span className="bar"><i style={{ width: `${Math.round(progress(s) * 100)}%` }} /></span></div>
-        <div>XP<b>{s.xp}</b></div>
-        <div>Streak 🔥<b>{s.streak} mgg</b></div>
-        <div>Misi<b>{done}/{ms.length}</b></div>
-      </div>
-    </section>
-  );
-}
+const TABS = [
+  ['map', '01 // PETA LAPANGAN'],
+  ['journal', '02 // LOGBOOK KAFE'],
+  ['scrap', '03 // SCRAPBOOK FOTO'],
+  ['quest', '04 // MISI & TELEMETRI'],
+];
 
 export default function App() {
   const [visits, setVisits] = useState([]);
-  const [tab, setTab] = useState('journal');
+  const [tab, setTab] = useState('map'); // PIN-FIRST: default to map survey terminal!
   const [form, setForm] = useState(null);      // { id?, draft? }
   const [detailId, setDetailId] = useState(null);
   const [scrapId, setScrapId] = useState(null);
@@ -44,15 +28,28 @@ export default function App() {
   const timer = useRef();
 
   const notify = useCallback(msg => {
-    setToast(msg); clearTimeout(timer.current);
-    timer.current = setTimeout(() => setToast(''), 3600);
+    setToast(msg);
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => setToast(''), 3800);
   }, []);
-  useEffect(() => { loadVisits().then(setVisits); }, []);
-  useEffect(() => { window.scrollTo(0, 0); }, [tab]);
+
+  useEffect(() => {
+    loadVisits().then(setVisits);
+  }, []);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [tab]);
 
   const commit = useCallback(async next => {
-    try { await saveVisits(next); setVisits(next); return true; }
-    catch { notify('Penyimpanan penuh! Kurangi foto.'); return false; }
+    try {
+      await saveVisits(next);
+      setVisits(next);
+      return true;
+    } catch {
+      notify('KAPASITAS PENYIMPANAN PENUH. KURANGI RESOLUSI ATAU JUMLAH FOTO.');
+      return false;
+    }
   }, [notify]);
 
   async function saveVisit(data) {
@@ -60,60 +57,154 @@ export default function App() {
     const next = form.id
       ? visits.map(v => v.id === form.id ? { ...v, ...data } : v)
       : [...visits, { id: crypto.randomUUID(), created: Date.now(), seed: Math.floor(Math.random() * 1e9), paper: 'night', ...data }];
+
     if (!await commit(next)) return;
     const after = computeStats(next), newB = BADGES.filter(b => earned(after).has(b.id) && !had.has(b.id));
-    let msg = `+${after.xp - before.xp} XP`;
-    if (after.level > before.level) msg += ` · Naik ke level ${after.level}!`;
-    if (newB.length) msg += ` · Lencana baru: ${newB.map(b => b.name).join(', ')}`;
+    let msg = `+${after.xp - before.xp} XP RECORDED`;
+    if (after.level > before.level) msg += ` // ELEVATED TO LEVEL ${after.level}`;
+    if (newB.length) msg += ` // LENCANA: ${newB.map(b => b.name).join(', ')}`;
     const mDone = missions(next).filter(m => m.done).length - missions(visits).filter(m => m.done).length;
-    if (mDone > 0) msg += ` · ${mDone} misi selesai!`;
-    confetti(after.level > before.level || newB.length || mDone > 0 ? 160 : 50);
-    setForm(null); notify(msg);
+    if (mDone > 0) msg += ` // ${mDone} MISI TERPENUHI`;
+
+    confetti(after.level > before.level || newB.length || mDone > 0 ? 120 : 40);
+    setForm(null);
+    notify(msg);
   }
+
   async function removeVisit(id) {
-    if (!confirm('Hapus kunjungan ini?')) return;
-    if (await commit(visits.filter(v => v.id !== id))) { setDetailId(null); notify('Kunjungan dihapus'); }
+    if (!confirm('HAPUS DATA LOG INI DARI TERMINAL?')) return;
+    if (await commit(visits.filter(v => v.id !== id))) {
+      setDetailId(null);
+      notify('DATA LOG TELAH DIHAPUS.');
+    }
   }
+
   const updateVisit = (id, patch) => commit(visits.map(v => v.id === id ? { ...v, ...patch } : v));
 
   const detail = visits.find(v => v.id === detailId);
   const editing = form?.id && visits.find(v => v.id === form.id);
+  const stats = computeStats(visits);
 
   return (
-    <>
-      <header className="top">
-        <a className="brand" href="#" onClick={e => { e.preventDefault(); setTab('journal'); }}>Jejak Kopi</a>
-        <nav className="tabs" aria-label="Navigasi">
-          {TABS.map(([k, label]) => <button key={k} className={tab === k ? 'on' : ''} onClick={() => setTab(k)}>{label}</button>)}
+    <div className="inversa-terminal-app">
+      {/* Top Command Navigation Bar */}
+      <header className="terminal-nav">
+        <div className="nav-brand-group">
+          <a href="#" className="nav-wordmark" onClick={e => { e.preventDefault(); setTab('map'); }}>
+            JEJAK KOPI <span className="brand-dot"></span>
+          </a>
+          <span className="nav-status-tag">FIELD TERMINAL 2.0</span>
+        </div>
+
+        <nav className="nav-tabs" aria-label="Navigasi instrumen">
+          {TABS.map(([k, label]) => (
+            <button
+              key={k}
+              type="button"
+              className={`nav-tab-btn ${tab === k ? 'active' : ''}`}
+              onClick={() => setTab(k)}
+            >
+              {label}
+            </button>
+          ))}
         </nav>
-        <button className="primary" onClick={() => setForm({})}>+ Kunjungan</button>
+
+        <div className="nav-actions">
+          <div className="nav-telemetry-pill">
+            <span className="dot-live"></span>
+            <span>LVL {stats.level} // {stats.xp} XP</span>
+          </div>
+          <button
+            type="button"
+            className="btn-lime-nav"
+            onClick={() => setForm({})}
+          >
+            + TANDAI PIN KAFE
+          </button>
+        </div>
       </header>
 
-      {tab === 'journal' && <Hero visits={visits} onAdd={() => setForm({})} onMap={() => setTab('map')} />}
-
-      <main>
-        {tab === 'journal' && <Journal visits={visits} onOpen={setDetailId} />}
-        {tab === 'map' && <MapView visits={visits} focus={focus} onAdd={draft => setForm({ draft })} onOpen={setDetailId} />}
-        {tab === 'scrap' && <Scrapbook visits={visits} selectedId={scrapId} onSelect={setScrapId} onUpdate={updateVisit} />}
-        {tab === 'quest' && <Quest visits={visits} notify={notify} onImport={async d => { if (await commit(d)) notify('Impor berhasil'); }} />}
+      {/* Main Command Workspace */}
+      <main className="terminal-main-viewport">
+        {tab === 'map' && (
+          <MapView
+            visits={visits}
+            focus={focus}
+            onAdd={draft => setForm({ draft })}
+            onOpen={setDetailId}
+          />
+        )}
+        {tab === 'journal' && (
+          <Journal
+            visits={visits}
+            onOpen={setDetailId}
+            onGoMap={() => setTab('map')}
+          />
+        )}
+        {tab === 'scrap' && (
+          <Scrapbook
+            visits={visits}
+            selectedId={scrapId}
+            onSelect={setScrapId}
+            onUpdate={updateVisit}
+          />
+        )}
+        {tab === 'quest' && (
+          <Quest
+            visits={visits}
+            notify={notify}
+            onImport={async d => { if (await commit(d)) notify('IMPORT SELESAI'); }}
+          />
+        )}
       </main>
 
-      <footer className="foot"><span>Jejak Kopi</span><span>Data tersimpan di browser ini · Peta © OpenStreetMap, CARTO</span></footer>
+      {/* Footer Instrument Status Bar */}
+      <footer className="terminal-footer">
+        <div className="footer-col">
+          <span className="mono">INVERSA FIELD SYSTEM // JEJAK KOPI</span>
+          <span className="mono-sub">LAT/LON RECON & COFFEE EXPEDITION LOG</span>
+        </div>
+        <div className="footer-col right">
+          <span className="mono">STORAGE: INDEXEDDB LOCAL // SATELLITE: ESRI WORLD IMAGERY</span>
+          <span className="mono-sub">&copy; OPENSTREETMAP CONTRIBUTORS</span>
+        </div>
+      </footer>
 
+      {/* Modal Dialogs */}
       <Modal open={!!form} onClose={() => setForm(null)}>
-        {form && <VisitForm key={form.id || 'new'} initial={editing || null} draft={form.draft} notify={notify} onSave={saveVisit} onCancel={() => setForm(null)} />}
+        {form && (
+          <VisitForm
+            key={form.id || 'new'}
+            initial={editing || null}
+            draft={form.draft}
+            notify={notify}
+            onSave={saveVisit}
+            onCancel={() => setForm(null)}
+          />
+        )}
       </Modal>
 
       <Modal open={!!detail} onClose={() => setDetailId(null)}>
-        {detail && <VisitDetail v={detail}
-          onClose={() => setDetailId(null)}
-          onDelete={() => removeVisit(detail.id)}
-          onEdit={() => { setDetailId(null); setForm({ id: detail.id }); }}
-          onScrap={() => { setScrapId(detail.id); setDetailId(null); setTab('scrap'); }}
-          onShowOnMap={() => { setFocus({ lat: detail.lat, lng: detail.lng }); setDetailId(null); setTab('map'); }} />}
+        {detail && (
+          <VisitDetail
+            v={detail}
+            onClose={() => setDetailId(null)}
+            onDelete={() => removeVisit(detail.id)}
+            onEdit={() => { setDetailId(null); setForm({ id: detail.id }); }}
+            onScrap={() => { setScrapId(detail.id); setDetailId(null); setTab('scrap'); }}
+            onShowOnMap={() => {
+              setFocus({ lat: detail.lat, lng: detail.lng });
+              setDetailId(null);
+              setTab('map');
+            }}
+          />
+        )}
       </Modal>
 
-      <div id="toast" className={toast ? 'show' : ''} role="status" aria-live="polite">{toast}</div>
-    </>
+      {/* Terminal Notification Banner */}
+      <div id="toast" className={`terminal-toast ${toast ? 'show' : ''}`} role="status" aria-live="polite">
+        <span className="toast-bullet">▪</span> {toast}
+      </div>
+    </div>
   );
 }

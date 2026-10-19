@@ -1,5 +1,3 @@
-// Menghasilkan screenshot untuk README (jalankan: npm run dev, lalu `npm run screenshots`).
-// Memakai data demo yang di-seed ke IndexedDB — foto demo dibuat dari gradien + emoji.
 import puppeteer from 'puppeteer-core';
 import { existsSync, mkdirSync } from 'node:fs';
 
@@ -52,42 +50,57 @@ await page.setViewport({ width: 1440, height: 900 });
 await page.goto(URL, { waitUntil: 'networkidle2' });
 await page.evaluate(seed);
 await page.reload({ waitUntil: 'networkidle2' });
-await sleep(800);
+await sleep(2500);
 
 const click = text => page.evaluate(t => {
-  const b = [...document.querySelectorAll('button')].find(x => x.textContent.includes(t)); if (!b) throw new Error('no button ' + t); b.click();
+  const b = [...document.querySelectorAll('button, a')].find(x => x.textContent.includes(t));
+  if (!b) throw new Error('no button ' + t);
+  b.click();
 }, text);
 const shot = (name, opts = {}) => page.screenshot({ path: `${OUT}/${name}.png`, ...opts });
 
-// Jurnal
-await shot('journal');
-await page.evaluate(() => document.querySelector('main').scrollIntoView());
-await sleep(300);
+// 01: Landing on Map Field Terminal
+await shot('map');
+await shot('journal'); // Map is the primary landing view
+
+// Interactively drop a pin
+const mapWrap = await page.$('.terminal-map-wrapper');
+if (mapWrap) {
+  const box = await mapWrap.boundingBox();
+  await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+  await sleep(1500);
+  await shot('map-add-pin');
+
+  // Open Form from newly dropped pin
+  await click('CATAT KAFE DI SINI');
+  await sleep(1500);
+  await shot('form');
+  await click('BATAL');
+  await sleep(500);
+}
+
+// 02: Switch to Logbook
+await click('LOGBOOK');
+await sleep(1000);
 await shot('journal-cards');
 
-// Peta
-await click('Peta'); await sleep(4000);
-await shot('map');
-const box = await (await page.$('.bigmap')).boundingBox();
-await page.mouse.click(box.x + 120, box.y + box.height - 120); await sleep(1500);
-await shot('map-add-pin');
+// 03: Switch to Scrapbook
+await click('SCRAPBOOK');
+await sleep(2500);
+const canvas = await page.$('canvas');
+if (canvas) {
+  await canvas.screenshot({ path: `${OUT}/scrapbook.png` });
+}
 
-// Form dari pin
-await click('Catat kopi di sini'); await sleep(2500);
-await shot('form');
-await click('Batal'); await sleep(400);
-
-// Scrapbook
-await click('Scrapbook'); await sleep(2000);
-await (await page.$('canvas')).screenshot({ path: `${OUT}/scrapbook.png` });
-
-// Pencapaian
-await click('Pencapaian'); await sleep(800);
+// 04: Switch to Misi & Telemetri
+await click('MISI');
+await sleep(1000);
 await shot('quest', { fullPage: true });
 
-// Mobile
+// 05: Mobile viewport
 await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 2, isMobile: true });
-await click('Jurnal'); await sleep(800);
+await click('PETA');
+await sleep(1000);
 await shot('mobile');
 
 await browser.close();

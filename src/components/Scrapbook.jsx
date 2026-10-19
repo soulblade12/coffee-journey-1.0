@@ -15,21 +15,73 @@ export default function Scrapbook({ visits, selectedId, onSelect, onUpdate }) {
   }, [v]);
 
   return (
-    <section aria-label="Scrapbook">
-      <h2 className="section-title">Scrapbook</h2>
-      {!v ? <p className="empty">Tambahkan kunjungan dengan foto untuk membuat scrapbook.</p> : (
+    <section className="terminal-scrap-section" aria-label="Dokumentasi Scrapbook">
+      <div className="terminal-header">
+        <div className="telemetry-bar">
+          <span className="data-tag">VISUAL COMPILATION // 03</span>
+          <span className="mono-label">SCRAPBOOK POLAROID & REVIEW</span>
+          <span className="data-tag lime-invert">{sorted.length} ENTRI SIAP CETAK</span>
+        </div>
+        <h1 className="hero-display-title">
+          EXPEDITION<br />SCRAPBOOK.
+        </h1>
+        <p className="hero-description">
+          Kompilasi foto-foto survei kafe menjadi lembaran polaroid vintage lengkap dengan selotip washi, tiket cupping, dan koordinat. Siap diunduh format PNG.
+        </p>
+      </div>
+
+      {!v ? (
+        <div className="empty-field-box">
+          <span className="mono-label">BELUM ADA DOKUMENTASI FOTO</span>
+          <p>Catat kunjungan kafe dan lampirkan foto untuk membuat lembaran scrapbook otomatis.</p>
+        </div>
+      ) : (
         <>
-          <div className="toolbar">
-            <select value={v.id} onChange={e => onSelect(e.target.value)} aria-label="Pilih kunjungan">
-              {sorted.map(x => <option key={x.id} value={x.id}>{x.name} — {fmtDate(x.date)}</option>)}
+          <div className="tactical-command-bar">
+            <select
+              value={v.id}
+              onChange={e => onSelect(e.target.value)}
+              aria-label="Pilih kunjungan kafe"
+              className="select-instrument flex-grow"
+            >
+              {sorted.map(x => (
+                <option key={x.id} value={x.id}>
+                  {x.name.toUpperCase()} — {fmtDate(x.date)} {x.photos.length ? `(${x.photos.length} FOTO)` : '(NO PHOTO)'}
+                </option>
+              ))}
             </select>
-            <select value={v.paper || 'night'} onChange={e => onUpdate(v.id, { paper: e.target.value })} aria-label="Kertas">
-              {Object.entries(PAPERS).map(([k, p]) => <option key={k} value={k}>{p.label}</option>)}
+
+            <select
+              value={v.paper || 'night'}
+              onChange={e => onUpdate(v.id, { paper: e.target.value })}
+              aria-label="Tekstur kertas"
+              className="select-instrument"
+            >
+              {Object.entries(PAPERS).map(([k, p]) => (
+                <option key={k} value={k}>{p.label.toUpperCase()}</option>
+              ))}
             </select>
-            <button className="outline" onClick={() => onUpdate(v.id, { seed: Math.floor(Math.random() * 1e9) })}>Acak tata letak</button>
-            <button className="outline" onClick={() => ref.current.toBlob(b => download(URL.createObjectURL(b), `scrapbook-${v.name.replace(/\W+/g, '-')}.png`))}>Unduh PNG</button>
+
+            <button
+              type="button"
+              className="btn-ghost"
+              onClick={() => onUpdate(v.id, { seed: Math.floor(Math.random() * 1e9) })}
+            >
+              🎲 ACAK TATA LETAK
+            </button>
+
+            <button
+              type="button"
+              className="btn-lime"
+              onClick={() => ref.current.toBlob(b => download(URL.createObjectURL(b), `scrapbook-${v.name.replace(/\W+/g, '-')}.png`))}
+            >
+              ⬇ UNDUH PNG
+            </button>
           </div>
-          <div className="scrapwrap"><canvas ref={ref} aria-label="Pratinjau scrapbook" /></div>
+
+          <div className="inversa-scrapbook-canvas-wrap">
+            <canvas ref={ref} aria-label="Pratinjau scrapbook polaroid" />
+          </div>
         </>
       )}
     </section>
