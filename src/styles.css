@@ -164,6 +164,7 @@ legend{font:800 14px var(--font-display);padding:0 10px;color:var(--color-cobalt
 .picker .leaflet-container{border:1px solid var(--line);border-radius:var(--radius-xl)}
 .picker-bar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:10px}
 .leaflet-container{background:var(--color-onyx-canvas);font:inherit}
+.leaflet-tile-pane{filter:invert(100%) hue-rotate(180deg) brightness(85%) contrast(110%)}
 .leaflet-control-attribution{background:#171721cc!important;color:var(--color-ash-text)!important;font-size:11px}
 .leaflet-control-attribution a{color:var(--color-ash-text)!important}
 .leaflet-bar{border:1px solid var(--line)!important;box-shadow:none!important;border-radius:var(--radius-xl)!important;overflow:hidden}
