@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jejak Kopi — Jurnal Kafe & Scrapbook</title>
+  <meta name="theme-color" content="#101010">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Fraunces:opsz,wght@9..144,800&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="#" aria-label="Jejak Kopi">Jejak Kopi</a>
+    <nav class="tabs" aria-label="Navigasi">
+      <button data-view="journal" class="on">Jurnal</button>
+      <button data-view="scrap">Scrapbook</button>
+      <button data-view="quest">Pencapaian</button>
+    </nav>
+    <button class="outline" id="add">+ Kunjungan</button>
+  </header>
+
+  <section class="hero" id="hero">
+    <div class="prism" aria-hidden="true">
+      <b class="cube c1"><i></i></b><b class="cube c2"><i></i></b><b class="cube c3"><i></i></b>
+      <b class="cube c4"><i></i></b><b class="cube c5"><i></i></b>
+    </div>
+    <h1>Setiap kopi<br>punya cerita.</h1>
+    <p class="lead">Catat kedai kopi, cafe, dan slowbar yang pernah kamu singgahi. Beri rating, kumpulkan XP, dan ubah fotomu jadi scrapbook.</p>
+    <div class="hud" id="hud" aria-live="polite"></div>
+  </section>
+
+  <main>
+    <section id="view-journal" class="view" aria-label="Jurnal">
+      <div class="toolbar">
+        <input type="search" id="q" placeholder="Cari tempat / area / menu" aria-label="Cari">
+        <select id="filterType" aria-label="Filter jenis">
+          <option value="">Semua jenis</option>
+          <option value="kedai kopi">Kedai kopi</option>
+          <option value="cafe">Cafe</option>
+          <option value="slowbar">Slowbar</option>
+        </select>
+        <select id="sortBy" aria-label="Urutkan">
+          <option value="date">Terbaru</option>
+          <option value="rating">Rating tertinggi</option>
+          <option value="name">Nama A–Z</option>
+        </select>
+      </div>
+      <div id="list" class="grid"></div>
+      <p id="empty" class="empty" hidden>Belum ada kunjungan. Tekan <b>+ Kunjungan</b> untuk mencatat tempat pertamamu.</p>
+    </section>
+
+    <section id="view-scrap" class="view" aria-label="Scrapbook" hidden>
+      <h2 class="section-title">Scrapbook</h2>
+      <div class="toolbar">
+        <select id="scrapVisit" aria-label="Pilih kunjungan"></select>
+        <select id="scrapPaper" aria-label="Kertas">
+          <option value="night">Malam</option>
+          <option value="kraft">Kertas kraft</option>
+          <option value="cream">Krem polos</option>
+          <option value="grid">Kotak-kotak</option>
+        </select>
+        <button class="outline" id="shuffle">Acak tata letak</button>
+        <button class="outline" id="download">Unduh PNG</button>
+      </div>
+      <div class="scrapwrap"><canvas id="scrapCanvas" aria-label="Pratinjau scrapbook"></canvas></div>
+      <p id="scrapEmpty" class="empty" hidden>Tambahkan kunjungan dengan foto untuk membuat scrapbook.</p>
+    </section>
+
+    <section id="view-quest" class="view" aria-label="Pencapaian" hidden>
+      <div id="levelCard" class="level"></div>
+      <h2 class="section-title">Lencana</h2>
+      <div id="badges" class="badges"></div>
+      <h2 class="section-title">Data</h2>
+      <div class="toolbar">
+        <button class="outline" id="export">Ekspor cadangan</button>
+        <label class="outline">Impor <input type="file" id="import" accept="application/json" hidden></label>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot"><span>Jejak Kopi</span><span>Data tersimpan di browser ini</span></footer>
+
+  <dialog id="formDlg">
+    <form id="form" method="dialog">
+      <h2 id="formTitle">Kunjungan baru</h2>
+      <label>Nama tempat
+        <input name="name" required maxlength="80" list="places" autocomplete="off" placeholder="mis. Kopi Kenangan Senja">
+        <datalist id="places"></datalist>
+      </label>
+      <div class="row">
+        <label>Jenis
+          <select name="type">
+            <option value="kedai kopi">Kedai kopi</option>
+            <option value="cafe">Cafe</option>
+            <option value="slowbar">Slowbar</option>
+          </select>
+        </label>
+        <label>Tanggal <input type="date" name="date" required></label>
+      </div>
+      <label>Area / Kota <input name="area" maxlength="60" placeholder="mis. Kemang, Jakarta"></label>
+      <label>Pesanan <input name="menu" maxlength="120" placeholder="mis. V60 Ethiopia + croissant"></label>
+
+      <fieldset>
+        <legend>Rating</legend>
+        <div class="rate" data-key="coffee"><span>Kopi</span><div class="stars"></div></div>
+        <div class="rate" data-key="vibe"><span>Suasana</span><div class="stars"></div></div>
+        <div class="rate" data-key="service"><span>Pelayanan</span><div class="stars"></div></div>
+      </fieldset>
+
+      <label>Catatan <textarea name="note" rows="3" maxlength="400" placeholder="Rasa, aroma, cerita hari itu…"></textarea></label>
+
+      <label>Foto (maks. 6)
+        <input type="file" id="photos" accept="image/*" multiple>
+      </label>
+      <div id="thumbs" class="thumbs"></div>
+
+      <label>Stiker scrapbook
+        <select name="sticker">
+          <option>☕</option><option>🌿</option><option>🥐</option><option>🎧</option><option>📚</option><option>🌧️</option><option>✨</option><option>💛</option>
+        </select>
+      </label>
+
+      <div class="actions">
+        <button type="button" class="ghost" id="cancel">Batal</button>
+        <button class="outline" value="save">Simpan</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="detailDlg"><div id="detail"></div></dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
