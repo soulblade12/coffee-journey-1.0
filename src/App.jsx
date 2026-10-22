@@ -87,13 +87,18 @@ export default function App() {
 
   return (
     <div className="inversa-terminal-app">
+      {/* Oryzo Vertical Sidebar Brand Label */}
+      <div className="oryzo-sidebar-label" aria-hidden="true">
+        ORYZO 1-MODEL // JEJAK KOPI 2.0
+      </div>
+
       {/* Top Command Navigation Bar */}
       <header className="terminal-nav">
         <div className="nav-brand-group">
           <a href="#" className="nav-wordmark" onClick={e => { e.preventDefault(); setTab('map'); }}>
             JEJAK KOPI <span className="brand-dot"></span>
           </a>
-          <span className="nav-status-tag">FIELD TERMINAL 2.0</span>
+          <span className="nav-status-tag">DARKROOM EDITORIAL</span>
         </div>
 
         <nav className="nav-tabs" aria-label="Navigasi instrumen">
@@ -161,8 +166,8 @@ export default function App() {
       {/* Footer Instrument Status Bar */}
       <footer className="terminal-footer">
         <div className="footer-col">
-          <span className="mono">INVERSA FIELD SYSTEM // JEJAK KOPI</span>
-          <span className="mono-sub">LAT/LON RECON & COFFEE EXPEDITION LOG</span>
+          <span className="mono">ORYZO DARKROOM EDITORIAL // JEJAK KOPI 2.0</span>
+          <span className="mono-sub">WARM DARKNESS PRODUCT & COFFEE EXPEDITION LOG</span>
         </div>
         <div className="footer-col right">
           <span className="mono">STORAGE: INDEXEDDB LOCAL // SATELLITE: ESRI WORLD IMAGERY</span>

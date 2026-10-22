@@ -2,31 +2,33 @@ import { useEffect } from 'react';
 import { TileLayer, useMap } from 'react-leaflet';
 import L from 'leaflet';
 
-/** Layer satelit muka bumi resolusi tinggi (Esri World Imagery) sesuai tema Inversa */
+/** Layer satelit muka bumi resolusi tinggi (Esri World Imagery) dengan warm darkroom grading ala Oryzo */
 export function SatelliteTiles({ labels = true }) {
   return (
     <>
       <TileLayer
+        className="satellite-darkroom-tile"
         url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
         maxZoom={19}
         attribution='Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
       />
       {labels && (
         <TileLayer
+          className="labels-darkroom-tile"
           url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"
           maxZoom={19}
-          opacity={0.85}
+          opacity={0.75}
         />
       )}
     </>
   );
 }
 
-/** Layer topografi gelap alternatif */
+/** Layer topografi hangat gelap alternatif */
 export function TopoDarkTiles() {
   return (
     <TileLayer
-      className="topo-tile"
+      className="topo-darkroom-tile"
       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       maxZoom={19}
       attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -52,15 +54,15 @@ export function FlyTo({ target, zoom = 16 }) {
   return null;
 }
 
-/** Pin surveyor bernuansa Inversa: neon lime (#ebfc72), penanda instrumen lapangan */
+/** Pin surveyor editorial bernuansa ORYZO: Warm Cream (#ffedd7), Bark Brown (#382416), Ember Accent (#dc5000) */
 export const pinIcon = (label = '', draft = false) => L.divIcon({
-  className: 'surveyor-pin-wrap',
-  html: `<div class="surveyor-pin${draft ? ' target-draft' : ''}">
+  className: 'oryzo-pin-wrap',
+  html: `<div class="oryzo-pin${draft ? ' target-draft' : ''}">
     <span class="reticle"></span>
     <span class="dot"></span>
     <span class="tag-val">${label || '⌖'}</span>
   </div>`,
-  iconSize: [36, 44],
-  iconAnchor: [18, 40],
-  popupAnchor: [0, -38],
+  iconSize: [38, 46],
+  iconAnchor: [19, 42],
+  popupAnchor: [0, -40],
 });

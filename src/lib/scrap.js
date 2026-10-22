@@ -1,7 +1,7 @@
 import { TYPES, fmtDate } from './util';
 
 export const PAPERS = {
-  night: { label: 'Malam', bg: '#26211f', ink: '#f3e6d2', card: '#f7efe2', dots: '#3a312d' },
+  night: { label: 'Walnut Darkroom', bg: '#100904', ink: '#ffedd7', card: '#fff8ea', dots: '#382416' },
   kraft: { label: 'Kertas kraft', bg: '#c9a77c', ink: '#3a2716', card: '#fff8ea', dots: '#b4905f' },
   cream: { label: 'Krem polos', bg: '#f7f0e2', ink: '#3a2716', card: '#ffffff' },
   grid: { label: 'Kotak-kotak', bg: '#fbf8f1', ink: '#2d3a4a', card: '#ffffff', grid: '#cfe0ea' },

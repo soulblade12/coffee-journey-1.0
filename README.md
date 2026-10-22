@@ -1,17 +1,28 @@
-# ☕ Jejak Kopi (Coffee Journey 1.0)
-> **Topographic Field Terminal & Coffee Journal at Midnight** — Aplikasi web interaktif cafe hunting & jurnal kopi bergaya terminal satelit lapangan, berfokus utama pada penandaan pin koordinat di peta satelit terlebih dahulu (*Pin-First Workflow*), telemetri degustasi rasa kopi, gamifikasi misi ekspedisi, dan generator scrapbook polaroid.
+# ☕ Jejak Kopi (Coffee Journey 2.0)
+> **Darkroom Product Editorial & Coffee Expedition Journal** — Aplikasi web interaktif cafe hunting & jurnal kopi berbasis **Tailwind CSS** dengan estetika **ORYZO AI Darkroom Editorial**: kanvas gelap hangat (*Walnut Shadow* `#100904`), tipografi krem (*Warm Cream* `#ffedd7`), aksen solid *Bark Brown* (`#382416`), garis pemisah *Cork Border* (`#40372e`), dan aksen *Ember* (`#dc5000`). Berfokus pada penandaan pin koordinat di peta satelit terlebih dahulu (*Pin-First Workflow*).
 
-![Jejak Kopi Field Terminal Hero](docs/screenshots/map.png)
+![Jejak Kopi Darkroom Editorial Hero](docs/screenshots/map.png)
 
 ---
 
-## ⚡ Filosofi Desain: INVERSA Terminal Lapangan
+## ⚡ Filosofi Desain: ORYZO AI Darkroom Editorial
 
-Desain antarmuka dirancang ulang sepenuhnya mengikuti bahasa desain **INVERSA**:
-- **Palet Warna Taktis**: Obsidian Loam (`#13140e`) sebagai kanvas gelap natural, Bone Vellum (`#f4f3e8`) untuk tipografi editorial yang hangat seperti kertas vellum, dan aksen **Lime Surveyor (`#ebfc72`)** untuk target reticle & penanda aktif.
-- **Tipografi Berkarakter**: Kombinasi **Space Grotesk** untuk display editorial berskala besar dan **JetBrains Mono** untuk seluruh koordinat, label data, status telemetri, dan stempel waktu.
-- **Geometri Presisi**: Sudut tajam 3.6px (*flat, unadorned, zero-elevation*) menghadirkan nuansa instrumen penjelajah lapangan.
-- **Citra Satelit Beresolusi Tinggi**: Peta berbasis **Esri World Imagery** dengan foto satelit bumi nyata yang kontras dengan reticle bidik neon-lime.
+Desain antarmuka dirancang ulang mengikuti sistem desain **ORYZO AI**:
+- **Palet Warna Warm Darkroom**:
+  - `Walnut Shadow (#100904)`: Kanvas gelap hangat natural (bukan hitam pekat sintetis).
+  - `Warm Cream (#ffedd7)`: Teks utama dan garis interaktif yang hangat seperti kertas klasik.
+  - `Bark Brown (#382416)`: Permukaan solid untuk satu-satunya tombol CTA utama.
+  - `Cork Border (#40372e)`: Hairline dashed dividers (1px garis putus-putus) dan pembatas kontainer.
+  - `Driftwood (#6c5f51)`: Nuansa abu-abu hangat transisi untuk teks sekunder.
+  - `Ember Accent (#dc5000)`: Aksen oranye untuk link, tag khusus, dan indikator status aktif.
+- **Tipografi Editorial**:
+  - **Uppercase Weight 500**: Standar tegas pada navigasi, heading, tombol, dan label data.
+  - **Mixed Case Weight 400**: Khusus untuk catatan seduhan, deskripsi cupping, dan cerita jurnal lapangan.
+  - **Line-Height Ketat (0.9)**: Menghasilkan judul display yang sculptural seperti karya editorial majalah desain.
+- **Kemudahan Pemeliharaan (Maintainability)**:
+  - Dibangun dengan **Tailwind CSS** + **PostCSS** + konfigurasi token terpusat di `tailwind.config.js`.
+  - Komponen modular dan kelas utilitas yang terstruktur rapi.
+- **Zero Drop-Shadows**: Kedalaman visual murni dicapai dari hierarki warna permukaan (`#100904` → `#382416`), tanpa efek blur berlebihan.
 
 ---
 
@@ -19,10 +30,10 @@ Desain antarmuka dirancang ulang sepenuhnya mengikuti bahasa desain **INVERSA**:
 
 ### 1. ⌖ Peta Lapangan Satelit (Pin-First Workflow — Fitur Utama)
 Halaman awal langsung menyajikan terminal peta satelit resolusi tinggi sehingga kamu dapat langsung menandai titik sebelum mengisi jurnal:
-- **Tandai Langsung di Peta**: Klik koordinat mana pun pada peta satelit untuk memunculkan bidik reticle lime dan membuka dialog *Tandai Kafe di Titik Ini*.
+- **Tandai Langsung di Peta**: Klik koordinat mana pun pada peta satelit untuk memunculkan bidik reticle warm cream/ember dan membuka formulir *Tandai Kafe di Titik Ini*.
 - **HUD Telemetri Koordinat Realtime**: Menampilkan `CURSOR POS` (latitude/longitude saat kursor bergerak) dan `TARGET PIN` secara presisi.
 - **Lokasi Saya Instan (GPS)**: Tombol `⌖ LOKASI SAYA SEKARANG` untuk langsung mengunci koordinat GPS perangkat kamu di lapangan.
-- **Pencarian Alamat & Tempat**: Kolom pencarian terintegrasi dengan OpenStreetMap Nominatim.
+- **Pencarian Alamat & Tempat**: Kolom pencarian minimalis (*underline-only*) terintegrasi dengan OpenStreetMap Nominatim.
 - **Reverse Geocoding Otomatis**: Mendeteksi nama jalan, kelurahan, dan kota secara otomatis saat koordinat dipilih.
 - **Tabel Log Ekspedisi**: Ringkasan daftar kafe yang telah ditandai lengkap dengan stempel koordinat dan link cepat ke detail.
 
@@ -48,7 +59,7 @@ Halaman awal langsung menyajikan terminal peta satelit resolusi tinggi sehingga 
 ### 3. 🖼️ Scrapbook Polaroid Generator
 - Ubah dokumentasi foto kunjungan menjadi lembaran scrapbook estetis.
 - Tampilan foto bergaya polaroid miring dengan selotip washi tape, stiker ekspedisi, dan catatan tiket seduhan.
-- Pilihan tekstur kertas: *Obsidian Night, Kertas Kraft, Krem Vellum, dan Kotak-kotak (Grid)*.
+- Pilihan tekstur kertas: *Walnut Darkroom, Kertas Kraft, Krem Vellum, dan Kotak-kotak (Grid)*.
 - Tombol **🎲 Acak Tata Letak** untuk mengocok sudut kemiringan dan posisi secara dinamis.
 - Ekspor langsung dalam resolusi tinggi sebagai format **PNG**.
 
@@ -86,9 +97,10 @@ Halaman awal langsung menyajikan terminal peta satelit resolusi tinggi sehingga 
 ## 🛠️ Tumpukan Teknologi (Tech Stack)
 
 - **Frontend Core**: [React 18](https://react.dev/) + [Vite 5](https://vitejs.dev/)
+- **Styling Framework**: [Tailwind CSS v3](https://tailwindcss.com/) + [PostCSS](https://postcss.org/) + [Autoprefixer](https://github.com/postcss/autoprefixer)
 - **Peta Satelit**: [Leaflet](https://leafletjs.com/) + [React-Leaflet](https://react-leaflet.js.org/) + [Esri World Imagery](https://www.arcgis.com/home/item.html?id=10df2279f9684e4a9f6a7f08febac2a9) + OSM Nominatim
-- **Sistem Desain**: INVERSA Style Specification (Obsidian Loam `#13140e`, Bone Vellum `#f4f3e8`, Lime Surveyor `#ebfc72`, Iron Filings `#404040`)
-- **Tipografi**: JetBrains Mono, Space Grotesk, Inter, Caveat, Fraunces (via Google Fonts)
+- **Sistem Desain**: ORYZO AI Style Reference (`#100904` Walnut Shadow, `#ffedd7` Warm Cream, `#382416` Bark Brown, `#40372e` Cork Border, `#dc5000` Ember Accent)
+- **Tipografi**: Inter (Halyard substitute), JetBrains Mono, Caveat, Fraunces
 - **Rendering Kanvas**: HTML5 Canvas API (Generator Scrapbook PNG)
 - **Database**: IndexedDB Browser API
 

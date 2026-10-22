@@ -182,7 +182,7 @@ export default function MapView({ visits, focus, onAdd, onOpen }) {
             <CircleMarker
               center={[me.lat, me.lng]}
               radius={9}
-              pathOptions={{ color: '#ebfc72', weight: 2, fillColor: '#ebfc72', fillOpacity: 0.4 }}
+              pathOptions={{ color: '#ffedd7', weight: 2, fillColor: '#dc5000', fillOpacity: 0.7 }}
             />
           )}
 
