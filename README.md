@@ -1,143 +1,175 @@
 # ☕ Jejak Kopi (Coffee Journey 2.0)
-> **Darkroom Product Editorial & Coffee Expedition Journal** — Aplikasi web interaktif cafe hunting & jurnal kopi berbasis **Tailwind CSS** dengan estetika **ORYZO AI Darkroom Editorial**: kanvas gelap hangat (*Walnut Shadow* `#100904`), tipografi krem (*Warm Cream* `#ffedd7`), aksen solid *Bark Brown* (`#382416`), garis pemisah *Cork Border* (`#40372e`), dan aksen *Ember* (`#dc5000`). Dilengkapi **Interactive Drag & Drop Scrapbook Book**, **AI Photo Scanner & Die-Cut Sticker Generator**, **Pin-First Satellite Map**, dan gamifikasi misi petualangan rasa.
+> **Darkroom Product Editorial & Coffee Journal** — Aplikasi web interaktif eksplorasi kedai kopi & jurnal rasa berbasis **React 18**, **Tailwind CSS**, arsitektur modular standar startup, dan estetika **ORYZO AI Darkroom Editorial**: kanvas gelap hangat (*Walnut Shadow* `#100904`), tipografi krem (*Warm Cream* `#ffedd7`), aksen solid *Bark Brown* (`#382416`), garis pemisah *Cork Border* (`#40372e`), dan aksen *Ember* (`#dc5000`).
+
+Dilengkapi **Interactive Drag & Drop Scrapbook Book**, **AI Photo Scanner & Die-Cut Vinyl Sticker Generator**, **Pin-First Satellite Map**, **Hybrid Places API (Google + OpenStreetMap)**, **Check-in Cepat (30 Detik)**, **Wishlist Map Pinning**, dan gamifikasi petualangan rasa dengan dukungan penuh untuk layar **Mobile, Tablet, dan Desktop**.
 
 ![Jejak Kopi Darkroom Editorial Hero](docs/screenshots/map.png)
 
 ---
 
-## ⚡ Filosofi Desain: ORYZO AI Darkroom Editorial
+## 🛠️ Tech Stack & Architecture
 
-Desain antarmuka dirancang mengikuti sistem desain **ORYZO AI**:
-- **Palet Warna Warm Darkroom**:
-  - `Walnut Shadow (#100904)`: Kanvas gelap hangat natural (bukan hitam pekat LCD sintetis).
-  - `Warm Cream (#ffedd7)`: Teks utama dan garis interaktif yang hangat seperti kertas klasik.
-  - `Bark Brown (#382416)`: Permukaan solid untuk satu-satunya tombol CTA utama (*single solid CTA*).
-  - `Cork Border (#40372e)`: Hairline dashed dividers (1px garis putus-putus) dan pembatas kontainer.
-  - `Driftwood (#6c5f51)`: Nuansa abu-abu hangat transisi untuk teks sekunder.
-  - `Ember Accent (#dc5000)`: Aksen oranye untuk link, tag khusus, dan indikator status aktif.
-- **Tipografi Editorial**:
-  - **Uppercase Weight 500**: Standar tegas pada navigasi, heading, tombol, dan label data.
-  - **Mixed Case Weight 400**: Khusus untuk catatan seduhan, deskripsi cupping, dan cerita jurnal lapangan.
-  - **Line-Height Ketat (0.9)**: Menghasilkan judul display yang sculptural seperti karya editorial majalah desain.
-- **Kemudahan Pemeliharaan (Maintainability)**:
-  - Dibangun dengan **Tailwind CSS** + **PostCSS** + konfigurasi token terpusat di `tailwind.config.js`.
-  - Komponen modular dan kelas utilitas yang terstruktur rapi.
-- **Zero Drop-Shadows**: Kedalaman visual murni dicapai dari hierarki warna permukaan (`#100904` → `#382416`), tanpa efek blur berlebihan.
+- **Core & Framework:** React 18, Vite 5, Node.js 18+
+- **Styling & Design System:** Tailwind CSS 3.4, PostCSS, Autoprefixer
+- **UI Helper & Icons:** `lucide-react` (vektor ikon modern & tajam), `clsx`, `tailwind-merge` (utilitas `cn` standar industri)
+- **Overlay Management:** React Portals (`createPortal(..., document.body)`) dengan `z-[9999]` memastikan modal, drawer, dan sheet selalu berada di layer teratas, kebal terhadap *stacking context* Leaflet.
+- **Peta & Geospasial:** Leaflet, React-Leaflet, Esri World Imagery (Satelit), OpenStreetMap (Jalanan), Geolocation API browser
+- **Penyimpanan Lokal:** Dexie.js (IndexedDB) dengan migrasi skema otomatis dari versi sebelumnya (aman & privat di perangkat user)
+- **AI & Computer Vision:** Tesseract.js (Client-side offline OCR) & HTML5 Canvas untuk deteksi profil rasa dan pencetakan stiker vinyl die-cut
+- **State Management:** Zustand (Store modular terpisah untuk Visits dan UI State)
+- **Pengujian & Kualitas Kode:** Vitest 2.1+, Puppeteer E2E Testing, ESLint
 
 ---
 
-## 🗺️ Fitur Utama
+## ☕ Sentuhan Autentik Pecinta Kopi & Barista
 
-### 1. ⌖ Peta Lapangan Satelit (Pin-First Workflow — Fitur Utama)
-Halaman awal langsung menyajikan terminal peta satelit resolusi tinggi sehingga kamu dapat langsung menandai titik sebelum mengisi jurnal:
-- **Tandai Langsung di Peta**: Klik/sentuh koordinat mana pun pada peta satelit untuk memunculkan bidik reticle warm cream/ember dan membuka laci aksi cepat (*floating quick action drawer*).
-- **HUD Telemetri Koordinat Realtime**: Menampilkan `CURSOR POS` (latitude/longitude saat kursor bergerak) dan `TARGET PIN` secara presisi.
-- **Filter Cepat Kategori**: Filter instan berdasarkan *Slowbar, Kedai Kopi, Cafe, atau Semua Tempat*.
-- **Lokasi Saya Instan (GPS)**: Tombol `⌖ LOKASI SAYA SEKARANG` untuk langsung mengunci koordinat GPS perangkat kamu di lapangan.
-- **Pencarian Alamat & Tempat**: Kolom pencarian minimalis (*underline-only*) terintegrasi dengan OpenStreetMap Nominatim.
-- **Reverse Geocoding Otomatis**: Mendeteksi nama jalan, kelurahan, dan kota secara otomatis saat koordinat dipilih.
-
-| Peta Satelit & Penandaan Pin Baru | Formulir Logbook dengan Quick Scan & Mini Map |
-| :---: | :---: |
-| ![Peta](docs/screenshots/map-add-pin.png) | ![Form](docs/screenshots/form.png) |
+Berdasarkan review mendalam dari sudut pandang penikmat specialty coffee, Jejak Kopi menghadirkan:
+1. **Bahasa Ngopi yang Hangat**: Seluruh istilah antarmuka menggunakan terminologi autentik kedai kopi (*Jurnal Ngopi, Logbook Seduhan, Catatan Rasa, Buku Kenangan, Mampir di sini?*).
+2. **Check-in Cepat (< 30 Detik)**: Catat saat cangkir masih hangat! Cukup klik/sentuh titik pada peta, masukkan nama kafe (dengan saran otomatis), rating kilat, foto cepat, atau simpan ke Wishlist, lalu lengkapi detail cupping kapan pun kamu santai.
+3. **1 Tempat = 1 Pin**: Kunjungan ulang ke kafe yang sama otomatis digabung dalam 1 pin rapi dengan lencana jumlah kunjungan (misal: "3x Mampir") dan riwayat lengkap, mencegah pin bertumpuk.
+4. **Wishlist Kafe di Peta**: Pin "Mau Dicoba" dengan warna kuning hangat berpendar (*amber glowing star*) berbeda jelas dari kafe yang sudah dikunjungi.
+5. **Atribut Cupping Sensori Mendalam**:
+   - Skala sensori 1–5: *Acidity (Keasaman), Body (Kekentalan), Sweetness (Kemanisan), Aftertaste (Kesan Akhir)*.
+   - Proses pascapanen: *Washed, Natural, Honey, Anaerobic, Giling Basah (Wet-Hulled)*.
+   - Tingkat sangrai: *Light, Medium, Dark Roast*.
+   - Kategori minuman: *Kopi Hitam (Filter/Espresso)* vs *Kopi Susu (Latte/Cappuccino/Aren)*.
 
 ---
 
-### 2. 🖼️ Interactive Drag & Drop Scrapbook Book & Stiker Koleksi
-- **Buku Jurnal Interaktif Bebas Tata Letak**: Letakkan dan susun foto polaroid, stiker notes rasa, selotip washi tape, dan lencana stempel sesuka hati dengan gestur *drag and drop* (mendukung mouse & *touchscreen* di tablet dan ponsel).
-- **Kontrol Fleksibel**: Putar sudut kemiringan (`↺`, `↻`), ubah ukuran (`−`, `+`), atur urutan lapisan (`⬆`), dan hapus (`✕`) setiap elemen secara presisi.
-- **Tulis Cerita & Catatan Tangan di Buku**: Tambahkan memo catatan tulisan tangan (*handwritten note*) langsung di lembaran buku untuk mengabadikan momen, cerita barista, maupun suasana hari itu dengan font tulisan tangan autentik (*Caveat*).
-- **Sekoci Aksesoris**: Koleksi selotip washi tape (*Kraft, Amber, Matcha, Espresso*) dan stempel kurasi kopi (*Fresh Brew, Single Origin, Slowbar Archive, Approved Taste*).
-- **Pilihan Kertas Buku**: *Walnut Darkroom, Kertas Kraft, Krem Vellum, dan Kotak-kotak (Grid)*.
-- **Ekspor PNG Resolusi Tinggi**: Unduh seluruh halaman buku yang telah kamu rancang sebagai gambar PNG tajam berkualitas tinggi untuk dibagikan ke Instagram Stories atau dicetak.
+## 📱 Responsif di Mobile, Tablet, dan Desktop
 
-<p align="center">
-  <img src="docs/screenshots/scrapbook.png" alt="Interactive Scrapbook Book" width="560" />
-</p>
-
----
-
-### 3. 📷 AI Photo Scanner & Die-Cut Sticker / Cupping Card Generator
-- **Pemindai Kartu Rasa & Cangkir Kopi**: Unggah atau foto kartu notes rasa (*cupping card*) atau cangkir kopi yang diberikan oleh barista.
-- **Mesin OCR Klien (Tesseract.js)**: Membaca teks pada kartu rasa secara lokal di browser dan otomatis mendeteksi profil rasa (*Peach, Jasmine, Citrus, Floral, Chocolate, dll.*), origin biji kopi, serta metode seduh untuk mengisi formulir jurnal secara otomatis.
-- **Generator Stiker Die-Cut**: Otomatis memotong gambar dengan tepi kontur putih (*white die-cut border*) dan kilau stiker vinil glossy.
-- **Kartu Cupping Koleksi Vintage**: Mengubah data hasil scan menjadi kartu koleksi bernomor seri autentik dengan cap segel emas yang bisa langsung ditempelkan ke buku scrapbook.
+Aplikasi dirancang responsif dari nol:
+- **Mobile (Layar HP):**
+  - Navigasi bawah (*bottom bar*) dengan jangkauan jempol yang nyaman.
+  - Floating action drawer pada peta untuk check-in instan dengan satu sentuhan.
+  - Modal dan form yang adaptif terhadap keyboard virtual.
+- **Tablet (iPad / Layar Sentuh):**
+  - Drag-and-drop scrapbook yang halus dengan sentuhan jari atau stylus pen.
+  - Tampilan split kartu logbook dan peta satelit yang proporsional.
+- **Desktop:**
+  - Navigasi editorial atas yang ramping (*fixed glass topbar*).
+  - Tampilan grid responsif 3 kolom pada Logbook dan Lencana.
 
 ---
 
-### 4. 🎮 Misi & Telemetri Gamifikasi (Expedition Operator)
-- **Tingkat & Peringkat Operator**: Dari *Pemburu Pemula*, *Penjelajah Kafe*, *Kartografer Seduh*, hingga *Legenda Coffee Sommelier*.
-- **Sistem Perolehan XP**:
-  - Kafe baru: `+25 XP`
-  - Kunjungan ulang: `+10 XP`
-  - Jenis tempat baru: `+15 XP`
-  - Buat stiker dari scan foto: `+30 XP`
-  - Susun lembaran scrapbook buku: `+25 XP`
-  - Foto dokumentasi: `+5 XP` per foto
-  - Pin koordinat di peta: `+5 XP`
-  - Profil rasa kopi diisi: `+5 XP`
-  - Catatan deskriptif (≥ 20 huruf): `+10 XP`
-- **8 Misi Mingguan Dinamis**: Misi eksplorasi yang diperbarui berkala termasuk misi memindai kartu rasa dan menaruh pin.
-- **16 Lencana Penghargaan Lapangan**: *Tegukan Pertama, Rutin Ngopi, Cafe Hopper, Kartografer Peta, Slowbar Lover, Sticker Artisan, Coffee Storyteller, Sommelier Rasa, dll.*
-- **Efek Konfeti Selebrasi**: Umpan balik visual saat menyelesaikan misi dan mencapai level baru.
+## 🔌 Strategi Hybrid Places API (Google + OSM Gratis)
 
-![Misi & Telemetri](docs/screenshots/quest.png)
+Aplikasi mengadopsi arsitektur hybrid cerdas yang sepenuhnya mematuhi **Google Maps Platform Terms of Service**:
+
+| Fitur | Penyedia | Kepatuhan & Peran |
+| :--- | :--- | :--- |
+| **Peta Dasar Satelit & Jalan** | **Leaflet + Esri / OSM** | Peta interaktif cepat tanpa biaya API. |
+| **Pin Jurnal Pengguna** | **Koordinat Tap / GPS User** | Data milik user sendiri, bebas ditampilkan di peta mana pun. |
+| **Saran Kafe Terdekat (Tap Peta)** | **Overpass API (OSM)** | Mengambil kafe sekitar radius 350m dengan atribusi *© OpenStreetMap* dan timeout 2.5s non-blocking. |
+| **Autocomplete Pencarian Kafe** | **Google Places (New) → Fallback Photon (OSM)** | Jika `VITE_GOOGLE_MAPS_KEY` diisi, saran pencarian menggunakan data Google yang akurat di Indonesia, ditampilkan sebagai daftar teks dengan branding *"Powered by Google"*. Jika tanpa key atau kuota habis, otomatis beralih ke OSM. |
+| **Info Detail Langsung** | **Google Place Details** | Menampilkan jam buka live dan rating Google langsung dari `place_id` tanpa disimpan permanen di database lokal (patuh ToS Google). |
 
 ---
 
-### 5. 📱 Sepenuhnya Responsif: Ponsel, Tablet, dan Desktop
+## 🖼️ Fitur Scrapbook & Pemindai Stiker AI
 
-Dirancang khusus agar nyaman digunakan langsung di kedai kopi menggunakan ponsel pintar (*one-handed mobile bottom nav*) maupun tablet (*touch stylus canvas*):
-
-| Tampilan Tablet (iPad Air / Tab) | Tampilan Ponsel (Mobile Bottom Nav) |
-| :---: | :---: |
-| ![Tablet](docs/screenshots/tablet.png) | ![Mobile](docs/screenshots/mobile.png) |
-
----
-
-### 6. 💾 Penyimpanan Offline-First & Keamanan Data
-- Berjalan sepenuhnya di sisi klien menggunakan **IndexedDB** berkapasitas besar.
-- Kompresi foto otomatis di peramban sehingga hemat ruang penyimpanan dan cepat dimuat.
-- **Ekspor Cadangan JSON** dan **Impor** untuk memindahkan data antar perangkat dengan aman tanpa server pihak ketiga.
+1. **Buku Kenangan Interaktif (Drag & Drop)**:
+   - Atur posisi foto polaroid miring, stiker label seduhan, washi tape (*Kraft, Amber, Matcha, Espresso*), dan cap kurasi (*Fresh Brew, Single Origin, Approved Taste*).
+   - Bebas geser, putar derajat kemiringan, dan ubah ukuran dengan sentuhan layar tablet/HP atau mouse.
+   - Tambahkan memo tulisan tangan (*handwritten note*) dengan font autentik *Caveat*.
+   - Ekspor PNG tajam resolusi tinggi 2x yang persis dengan tata letak layar.
+2. **AI Photo Scanner & Vinyl Die-Cut Sticker (Tesseract.js)**:
+   - Foto kartu rasa (*tasting card*) dari barista atau stiker kemasan biji kopi.
+   - Mesin OCR lokal membaca teks kartu secara otomatis, mendeteksi origin dan aroma (*Floral, Citrus, Berry, Caramel, dll.*), dan mencetaknya jadi stiker vinyl die-cut berbingkai putih.
+   - Anti-storage bloat: seluruh foto dan stiker dikompresi otomatis dengan resolusi optimal sebelum disimpan.
 
 ---
 
-## 🛠️ Tumpukan Teknologi (Tech Stack)
+## 🧱 Struktur Kode Bersih Standar Startup (Feature-Based)
 
-- **Frontend Core**: [React 18](https://react.dev/) + [Vite 5](https://vitejs.dev/)
-- **Styling Framework**: [Tailwind CSS v3](https://tailwindcss.com/) + [PostCSS](https://postcss.org/) + [Autoprefixer](https://github.com/postcss/autoprefixer)
-- **Computer Vision & OCR**: [Tesseract.js](https://tesseract.projectnaptha.com/) + HTML5 Canvas Image Processor
-- **Peta Satelit**: [Leaflet](https://leafletjs.com/) + [React-Leaflet](https://react-leaflet.js.org/) + [Esri World Imagery](https://www.arcgis.com/home/item.html?id=10df2279f9684e4a9f6a7f08febac2a9) + OSM Nominatim
-- **Sistem Desain**: ORYZO AI Style Reference (`#100904` Walnut Shadow, `#ffedd7` Warm Cream, `#382416` Bark Brown, `#40372e` Cork Border, `#dc5000` Ember Accent)
-- **Tipografi**: Inter, JetBrains Mono, Caveat (Handwriting), Fraunces (Vintage Serif)
-- **Database**: IndexedDB Browser API
+Arsitektur aplikasi disusun modular, terstruktur rapi, dan mudah dipelihara (*maintainable*):
 
----
-
-## 🚀 Cara Menjalankan di Lokal
-
-Pastikan [Node.js](https://nodejs.org/) (versi 18+) sudah terpasang di komputermu:
-
-```bash
-# 1. Clone repositori ini
-git clone https://github.com/soulblade12/coffee-journey-1.0.git
-cd coffee-journey-1.0
-
-# 2. Pasang dependensi
-npm install
-
-# 3. Jalankan server pengembangan
-npm run dev
+```
+src/
+├── app/                  # Kerangka aplikasi
+│   └── App.jsx           # Layout ramping, routing tab & modal orchestration
+├── config/
+│   └── env.js            # Environment flags & Google Maps API key
+├── data/
+│   ├── db.js             # Dexie (IndexedDB) dengan migrasi skema otomatis dari versi lama
+│   └── visitsRepo.js     # Repository CRUD data kunjungan & wishlist
+├── features/             # Satu folder = satu domain fitur mandiri
+│   ├── map/              # MapView.jsx, MapPicker.jsx, mapParts.jsx
+│   ├── visits/           # QuickCheckinModal.jsx, VisitForm.jsx, VisitDetail.jsx, CuppingRadar.jsx
+│   ├── journal/          # Journal.jsx (Logbook arsip seduhan & pencarian)
+│   ├── scrapbook/        # Scrapbook.jsx, exportPng.js, accessories.js
+│   ├── stickers/         # StickerScannerModal.jsx, stickerScanner.js (OCR & Canvas)
+│   ├── gamification/     # lib/ (xp.js, missions.js, badges.js, stats.js), Quest.jsx, __tests__/
+│   └── places/           # Hybrid Google Places + OSM (osmPlaces.js, googlePlaces.js, PlaceSuggestSheet.jsx)
+├── shared/
+│   ├── ui/               # Button, Card, Modal, Sheet, Stars, Chip, Tag, Input
+│   ├── lib/              # cn.js, date.js, image.js (compress), geo.js, confetti.js, id.js
+│   └── copy/id.js        # Bahasa Indonesia autentik kopi terpusat
+└── store/
+    ├── useVisitsStore.js # State kunjungan & repository binding (Zustand)
+    └── useUiStore.js     # State navigasi, drawer, modal, dan notifikasi toast (Zustand)
 ```
 
-Buka peramban di `http://localhost:5173`.
+---
+
+## 🎮 Gamifikasi & Aturan XP yang Akurat
+
+- **Tingkat & Gelar Pecinta Kopi**: Dari *Peminum Kopi Pemula*, *Pencicip Kedai*, *Penjelajah Kafe*, *Kartografer Seduhan*, *Pemburu Single Origin*, hingga *Legenda Coffee Sommelier*.
+- **Sistem Perolehan XP Konsisten**:
+  - Kafe baru: `+25 XP`
+  - Kunjungan ulang: `+10 XP`
+  - Kategori tempat baru: `+15 XP`
+  - Foto dokumentasi: `+5 XP` per foto (maks 5 foto)
+  - Nama menu / origin dicatat: `+5 XP`
+  - Pin titik koordinat di peta: `+5 XP`
+  - Profil rasa / cupping diisi: `+5 XP`
+  - Catatan cerita deskriptif (≥ 20 huruf): `+10 XP`
+  - Scan foto jadi stiker vinyl: `+15 XP`
+  - Simpan susunan buku kenangan scrapbook: `+10 XP`
+  - Bonus misi mingguan: `+20 s/d +35 XP` per misi selesai
+- **15 Lencana Penghargaan Autentik**:
+  *Tegukan Pertama, Rutin Ngopi, Kolektor Logbook, Legenda Penjelajah, Penjelajah Kedai, Kartografer Kopi, Penakluk Wishlist, Pencinta Slowbar, Analis Sensori, Artisan Stiker, Storyteller Kopi, Sommelier Rasa, Dokumentasi Visual, Seduhan Sempurna, dan Ritual 3 Minggu.*
+
+---
+
+## 🚀 Menjalankan Proyek
+
+### Prasyarat
+- Node.js (v18.12+ atau v20 LTS)
+- npm
+
+### Instalasi & Menjalankan Dev Server
+```bash
+# Pasang dependensi
+npm install
+
+# Jalankan development server
+npm run dev
+```
+Buka browser pada tautan `http://localhost:5173`.
+
+### Menjalankan Unit Tests (Vitest)
+```bash
+npm test
+```
 
 ### Build untuk Produksi
 ```bash
 npm run build
 ```
-Hasil siap saji akan otomatis dibangun di dalam folder `dist/`.
 
 ---
 
-Dibuat dengan ☕ untuk para penikmat kopi & cafe hunters.
+## 🔑 Konfigurasi Opsional Google Places
+
+Jika ingin mengaktifkan Google Places Autocomplete & Details:
+1. Salin `.env.example` ke `.env.local`
+2. Masukkan API key Google Cloud dengan library **Places API (New)** aktif:
+```env
+VITE_GOOGLE_MAPS_KEY=AIzaSy...
+```
+*Jika key tidak diisi, aplikasi 100% otomatis menggunakan OpenStreetMap & Photon secara gratis tanpa error.*
+
+---
+
+&copy; 2026 Jejak Kopi — Dibangun dengan cinta untuk para penjelajah kedai dan penikmat seduhan kopi.
