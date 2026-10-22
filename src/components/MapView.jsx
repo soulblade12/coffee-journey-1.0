@@ -32,12 +32,18 @@ export default function MapView({ visits, focus, onAdd, onOpen }) {
   const [target, setTarget] = useState(focus || null);
   const [cursorPos, setCursorPos] = useState(null);
   const [layer, setLayer] = useState('sat'); // 'sat' | 'topo'
+  const [typeFilter, setTypeFilter] = useState(''); // '' | 'slowbar' | 'kedai kopi' | 'cafe'
   const [q, setQ] = useState('');
   const [results, setResults] = useState([]);
   const [msg, setMsg] = useState('');
   const [isLocating, setIsLocating] = useState(false);
 
-  const pinned = useMemo(() => visits.filter(v => typeof v.lat === 'number'), [visits]);
+  const pinned = useMemo(() => {
+    return visits
+      .filter(v => typeof v.lat === 'number')
+      .filter(v => !typeFilter || v.type === typeFilter);
+  }, [visits, typeFilter]);
+
   const points = useMemo(() => pinned.map(v => [v.lat, v.lng]), [pinned]);
 
   // Reverse geocode when draft pin is placed
@@ -99,8 +105,32 @@ export default function MapView({ visits, focus, onAdd, onOpen }) {
           TANDAI PIN<br />KAFE DAHULU.
         </h1>
         <p className="hero-description">
-          Arahkan kursor dan klik di mana saja pada citra satelit untuk mengunci koordinat. Masukkan profil seduhan, aroma, dan abadikan foto untuk scrapbook.
+          Arahkan kursor atau sentuh layar di mana saja pada citra satelit untuk mengunci koordinat. Masukkan profil seduhan, aroma, dan abadikan foto untuk stiker scrapbook.
         </p>
+      </div>
+
+      {/* Quick Filter Chips for Map */}
+      <div className="map-quick-filters">
+        <button
+          type="button"
+          className={`filter-pill ${typeFilter === '' ? 'active' : ''}`}
+          onClick={() => setTypeFilter('')}
+        >
+          SEMUA TEMPAT ({visits.filter(v => typeof v.lat === 'number').length})
+        </button>
+        {Object.entries(TYPES).map(([k, label]) => {
+          const count = visits.filter(v => typeof v.lat === 'number' && v.type === k).length;
+          return (
+            <button
+              key={k}
+              type="button"
+              className={`filter-pill ${typeFilter === k ? 'active' : ''}`}
+              onClick={() => setTypeFilter(typeFilter === k ? '' : k)}
+            >
+              {label.toUpperCase()} ({count})
+            </button>
+          );
+        })}
       </div>
 
       {/* Tactical Command Control Bar */}
@@ -160,7 +190,7 @@ export default function MapView({ visits, focus, onAdd, onOpen }) {
           <div className="hud-metric">
             <span className="hud-key">CURSOR POS:</span>
             <span className="hud-val">
-              {cursorPos ? `${cursorPos.lat.toFixed(5)}, ${cursorPos.lng.toFixed(5)}` : 'KLIK PETA UNTUK PIN'}
+              {cursorPos ? `${cursorPos.lat.toFixed(5)}, ${cursorPos.lng.toFixed(5)}` : 'SENTUH/KLIK PETA UNTUK PIN'}
             </span>
           </div>
           {draft && (
@@ -243,6 +273,36 @@ export default function MapView({ visits, focus, onAdd, onOpen }) {
             </Marker>
           )}
         </MapContainer>
+
+        {/* Floating Quick Action Drawer for Mobile & Tablet */}
+        {draft && (
+          <div className="mobile-map-drawer">
+            <div className="drawer-inner">
+              <div className="drawer-header-info">
+                <span className="coord-chip-lime">
+                  ⌖ {draft.lat.toFixed(5)}, {draft.lng.toFixed(5)}
+                </span>
+                <span className="drawer-area-text">{draftArea || 'TITIK KOORDINAT TERKUNCI'}</span>
+              </div>
+              <div className="drawer-buttons-row">
+                <button
+                  type="button"
+                  className="btn-lime flex-grow"
+                  onClick={() => { onAdd(draft); setDraft(null); }}
+                >
+                  + CATAT JURNAL KAFE DI SINI (+25 XP)
+                </button>
+                <button
+                  type="button"
+                  className="btn-ghost-sm"
+                  onClick={() => setDraft(null)}
+                >
+                  BATAL
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Field Survey Log Table / Cards below the map */}
@@ -255,7 +315,7 @@ export default function MapView({ visits, focus, onAdd, onOpen }) {
         {pinned.length === 0 ? (
           <div className="empty-field-box">
             <span className="mono-label">BELUM ADA PIN TERSIMPAN</span>
-            <p>Klik titik mana pun pada citra satelit di atas atau tekan tombol "LOKASI SAYA SEKARANG" untuk menaruh pin pertama.</p>
+            <p>Sentuh atau klik titik mana pun pada citra satelit di atas atau tekan tombol "LOKASI SAYA SEKARANG" untuk menaruh pin pertama.</p>
           </div>
         ) : (
           <div className="survey-grid">

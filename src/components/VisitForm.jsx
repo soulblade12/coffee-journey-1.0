@@ -1,18 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
 import { StarInput } from './Stars';
 import MapPicker from './MapPicker';
+import StickerScannerModal from './StickerScannerModal';
 import { reverse } from '../lib/geo';
 import { BREWS, FLAVORS, STICKERS, TYPES, compress, todayStr } from '../lib/util';
 
 const blank = (draft) => ({
   name: '', type: 'kedai kopi', date: todayStr(), area: '', menu: '', brew: '', bean: '', flavors: [], note: '',
-  sticker: '☕', photos: [], ratings: { coffee: 0, vibe: 0, service: 0 },
+  sticker: '☕', photos: [], stickers: [], ratings: { coffee: 0, vibe: 0, service: 0 },
   lat: draft?.lat, lng: draft?.lng,
 });
 
 export default function VisitForm({ initial, draft, onSave, onCancel, notify }) {
   const [f, setF] = useState(() => initial ? { ...blank(), ...initial, ratings: { coffee: 0, vibe: 0, service: 0, ...initial.ratings } } : blank(draft));
   const [error, setError] = useState('');
+  const [showScanner, setShowScanner] = useState(false);
   const geoSeq = useRef(0);
   const set = patch => setF(p => ({ ...p, ...patch }));
   const pos = typeof f.lat === 'number' ? { lat: f.lat, lng: f.lng } : null;
@@ -134,7 +136,17 @@ export default function VisitForm({ initial, draft, onSave, onCancel, notify }) 
 
       {/* 03: SEDUHAN & RASA */}
       <div className="form-section-box">
-        <span className="mono-sub">03 // REKAMAN SENSORI & CUPPING</span>
+        <div className="box-header-row">
+          <span className="mono-sub">03 // REKAMAN SENSORI & CUPPING</span>
+          <button
+            type="button"
+            className="btn-lime"
+            style={{ padding: '6px 14px', fontSize: '11px' }}
+            onClick={() => setShowScanner(true)}
+          >
+            📷 SCAN KARTU RASA / BIKIN STIKER
+          </button>
+        </div>
         <label className="field-label">
           <span>MENU YANG DIPESAN</span>
           <input
@@ -247,6 +259,24 @@ export default function VisitForm({ initial, draft, onSave, onCancel, notify }) 
           {initial ? 'SIMPAN PERUBAHAN RECORD' : 'REKAM KE LOGBOOK & PETA'}
         </button>
       </div>
+
+      {showScanner && (
+        <StickerScannerModal
+          cafe={f}
+          onSaveSticker={stk => {
+            setF(prev => ({
+              ...prev,
+              stickers: [...(prev.stickers || []), stk],
+              flavors: Array.from(new Set([...prev.flavors, ...(stk.flavors || [])])),
+              bean: stk.bean || prev.bean,
+              brew: stk.brew || prev.brew,
+            }));
+            setShowScanner(false);
+            notify?.('🎉 HASIL SCAN BERHASIL DIAPLIKASIKAN KE FORMULIR & KOLEKSI STIKER!');
+          }}
+          onClose={() => setShowScanner(false)}
+        />
+      )}
     </form>
   );
 }

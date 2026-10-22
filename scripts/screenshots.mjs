@@ -61,7 +61,7 @@ const shot = (name, opts = {}) => page.screenshot({ path: `${OUT}/${name}.png`, 
 
 // 01: Landing on Map Field Terminal
 await shot('map');
-await shot('journal'); // Map is the primary landing view
+await shot('journal');
 
 // Interactively drop a pin
 const mapWrap = await page.$('.terminal-map-wrapper');
@@ -72,7 +72,7 @@ if (mapWrap) {
   await shot('map-add-pin');
 
   // Open Form from newly dropped pin
-  await click('CATAT KAFE DI SINI');
+  await click('CATAT');
   await sleep(1500);
   await shot('form');
   await click('BATAL');
@@ -86,10 +86,12 @@ await shot('journal-cards');
 
 // 03: Switch to Scrapbook
 await click('SCRAPBOOK');
-await sleep(2500);
-const canvas = await page.$('canvas');
-if (canvas) {
-  await canvas.screenshot({ path: `${OUT}/scrapbook.png` });
+await sleep(2000);
+const notebook = await page.$('.interactive-notebook-page');
+if (notebook) {
+  await notebook.screenshot({ path: `${OUT}/scrapbook.png` });
+} else {
+  await shot('scrapbook');
 }
 
 // 04: Switch to Misi & Telemetri
@@ -97,9 +99,14 @@ await click('MISI');
 await sleep(1000);
 await shot('quest', { fullPage: true });
 
-// 05: Mobile viewport
-await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 2, isMobile: true });
+// 05: Tablet Viewport (iPad Air 820x1180)
+await page.setViewport({ width: 820, height: 1180, deviceScaleFactor: 2, isMobile: true });
 await click('PETA');
+await sleep(1000);
+await shot('tablet');
+
+// 06: Mobile Viewport (iPhone 14 / 390x844)
+await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 2, isMobile: true });
 await sleep(1000);
 await shot('mobile');
 

@@ -72,6 +72,19 @@ export default function VisitDetail({ v, onEdit, onDelete, onScrap, onClose, onS
         </div>
       )}
 
+      {v.stickers?.length > 0 && (
+        <div className="detail-info-block">
+          <span className="mono-sub">STIKER & KOLEKSI HASIL SCAN ({v.stickers.length})</span>
+          <div className="detail-stickers-row">
+            {v.stickers.map((s, i) => (
+              <div key={i} className="mini-sticker-thumb" title={s.label}>
+                <img src={s.src} alt={s.label || 'Stiker'} />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {pinned && (
         <div className="detail-info-block">
           <span className="mono-sub">KOORDINAT PETA SATELIT</span>

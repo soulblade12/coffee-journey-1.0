@@ -11,10 +11,10 @@ import { BADGES, computeStats, earned, missions } from './lib/game';
 import { confetti } from './lib/confetti';
 
 const TABS = [
-  ['map', '01 // PETA LAPANGAN'],
-  ['journal', '02 // LOGBOOK KAFE'],
-  ['scrap', '03 // SCRAPBOOK FOTO'],
-  ['quest', '04 // MISI & TELEMETRI'],
+  ['map', '01 // PETA LAPANGAN', '🗺️'],
+  ['journal', '02 // LOGBOOK KAFE', '📖'],
+  ['scrap', '03 // SCRAPBOOK FOTO', '🖼️'],
+  ['quest', '04 // MISI & TELEMETRI', '🎯'],
 ];
 
 export default function App() {
@@ -102,14 +102,14 @@ export default function App() {
         </div>
 
         <nav className="nav-tabs" aria-label="Navigasi instrumen">
-          {TABS.map(([k, label]) => (
+          {TABS.map(([k, label, icon]) => (
             <button
               key={k}
               type="button"
               className={`nav-tab-btn ${tab === k ? 'active' : ''}`}
               onClick={() => setTab(k)}
             >
-              {label}
+              <span className="tab-icon">{icon}</span> {label}
             </button>
           ))}
         </nav>
@@ -152,6 +152,7 @@ export default function App() {
             selectedId={scrapId}
             onSelect={setScrapId}
             onUpdate={updateVisit}
+            notify={notify}
           />
         )}
         {tab === 'quest' && (
@@ -162,6 +163,21 @@ export default function App() {
           />
         )}
       </main>
+
+      {/* Mobile & Tablet Bottom Navigation Bar */}
+      <nav className="mobile-bottom-nav" aria-label="Navigasi ponsel">
+        {TABS.map(([k, label, icon]) => (
+          <button
+            key={k}
+            type="button"
+            className={`mobile-nav-btn ${tab === k ? 'active' : ''}`}
+            onClick={() => setTab(k)}
+          >
+            <span className="mobile-nav-icon">{icon}</span>
+            <span className="mobile-nav-label">{label.replace(/^\d+\s*\/\/\s*/, '')}</span>
+          </button>
+        ))}
+      </nav>
 
       {/* Footer Instrument Status Bar */}
       <footer className="terminal-footer">
